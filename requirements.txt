@@ -1,0 +1,11 @@
+langchain
+chromadb
+streamlit
+tiktoken
+pydantic
+fastapi
+uvicorn
+requests
+pytest
+rich
+python-dotenv
