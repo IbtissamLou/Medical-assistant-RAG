@@ -15,33 +15,24 @@ class IngestPipeline:
         self.chunker = Chunker()
         self.vector_store = ChromaDBClient(collection_name)
 
-    def _process_text(self, text: str, source: str, meta_extra: Optional[dict] = None):
-        """Common pipeline: clean → validate → chunk → store"""
-        
+    def _process(self, text: str, source: str, meta_extra=None):
         cleaned = self.preprocessor.clean_text(text)
         self.preprocessor.validate(cleaned)
 
-        print("✂️ Chunking text...")
         chunks = self.chunker.create_chunks(cleaned)
 
-        print(f"📌 Adding {len(chunks)} chunks to ChromaDB...")
-
         for i, chunk in enumerate(chunks):
-            unique_id = str(uuid.uuid4())
-            metadata = {
-                "source": source,
-                "chunk_index": i,
-            }
+            chunk_id = str(uuid.uuid4())
+            metadata = {"source": source, "chunk_index": i}
+
             if meta_extra:
                 metadata.update(meta_extra)
 
             self.vector_store.add_chunk(
-                chunk_id=unique_id,
+                chunk_id=chunk_id,
                 chunk_text=chunk.page_content,
-                metadata=metadata,
+                metadata=metadata
             )
-
-        print("✅ Ingestion completed successfully!")
 
     # ---------------------------------------------------------
     # 📥 1️⃣ Ingest Local File (PDF or TEXT)
@@ -54,7 +45,7 @@ class IngestPipeline:
         else:
             raw = self.loader.load_text(file_path)
 
-        self._process_text(
+        self._process(
             text=raw,
             source=source_url,
             meta_extra={"file_name": os.path.basename(file_path)}
@@ -67,7 +58,7 @@ class IngestPipeline:
         print(f"🌐 Fetching WHO guideline: {download_url}")
         raw = self.loader.fetch_who_guideline(download_url)
 
-        self._process_text(
+        self._process(
             text=raw,
             source="WHO",
             meta_extra={"url": download_url}
@@ -84,7 +75,7 @@ class IngestPipeline:
             api_key=api_key or os.getenv("PUBMED_API_KEY")
         )
 
-        self._process_text(
+        self._process(
             text=raw,
             source="PubMed",
             meta_extra={"pmid": pmid}
