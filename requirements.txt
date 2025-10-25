@@ -9,3 +9,5 @@ requests
 pytest
 rich
 python-dotenv
+requests
+pdfplumber
