@@ -1,15 +1,38 @@
+"""
+Purpose:
+--------
+Cleans and validates raw medical text before chunking.
+Ensures only meaningful medical content is stored in DB.
+"""
+
 import re
 
 class TextPreprocessor:
 
     @staticmethod
     def clean_text(text: str) -> str:
-        text = re.sub(r'\s+', ' ', text)  # normalize whitespace
-        text = text.strip()
-        return text
+        """Normalize whitespace and clean noise."""
+        text = re.sub(r'\s+', ' ', text)
+        return text.strip()
 
     @staticmethod
-    def validate(text: str):
-        if not text or len(text) < 50:
-            raise ValueError("Document too short or empty — rejected as low-quality data")
+    def validate(text: str) -> bool:
+        """
+        Validate content quality:
+        - Must be a meaningful medical text
+        - Must be sufficiently long
+        """
+        if not text or len(text) < 200:
+            raise ValueError("❌ Text too short — not medically useful.")
+
+        # Medical semantic check (extendable)
+        medical_keywords = [
+            "disease", "infection", "treatment", "symptom",
+            "diagnosis", "vaccine", "therapy", "clinical"
+        ]
+        if not any(term in text.lower() for term in medical_keywords):
+            raise ValueError(
+                "❌ Content does not appear to contain medical information."
+            )
+
         return True
