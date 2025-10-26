@@ -26,13 +26,13 @@ class TextPreprocessor:
             raise ValueError("❌ Text too short — not medically useful.")
 
         # Medical semantic check (extendable)
-        medical_keywords = [
-            "disease", "infection", "treatment", "symptom",
-            "diagnosis", "vaccine", "therapy", "clinical"
-        ]
-        if not any(term in text.lower() for term in medical_keywords):
-            raise ValueError(
-                "❌ Content does not appear to contain medical information."
-            )
+        #medical_keywords = [
+        #    "disease", "infection", "treatment", "symptom",
+        #    "diagnosis", "vaccine", "therapy", "clinical"
+        #]
+        #if not any(term in text.lower() for term in medical_keywords):
+         #   raise ValueError(
+          #      "❌ Content does not appear to contain medical information."
+           # )
 
         return True

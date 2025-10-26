@@ -131,6 +131,8 @@ class ChromaDBClient:
         Example:
             get(where={"pmid": "12345"})
         """
+        if include is None:
+            include = ["metadatas"] # ✅ Only need metadata to check duplicates
         return self.collection.get(ids=ids, where=where, include=include)
 
     def count(self) -> int:
