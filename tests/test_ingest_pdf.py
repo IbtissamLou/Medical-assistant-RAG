@@ -12,10 +12,11 @@ def sample_pdf_path() -> str:
 
 
 def test_pdf_ingestion_chunking_embedding(sample_pdf_path):
-    pipeline = IngestPipeline(collection_name="test_pdf_chunks")
+    pipeline = IngestPipeline(collection_name="test_pdf_chunks",use_hf_embeddings=False)
 
     # Ingest the file
     pipeline.ingest_pdf_file(sample_pdf_path)
+
 
     # Ensure chunks were stored
     count = pipeline.vector_store.count()

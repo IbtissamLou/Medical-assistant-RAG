@@ -21,11 +21,11 @@ from .chroma_client import ChromaDBClient
 
 class IngestPipeline:
 
-    def __init__(self, collection_name="medical_chunks"):
+    def __init__(self, collection_name="medical_chunks",use_hf_embeddings=True):
         self.loader = DocumentLoader()
         self.preprocessor = TextPreprocessor()
         self.chunker = Chunker()
-        self.vector_store = ChromaDBClient(collection_name)
+        self.vector_store = ChromaDBClient(collection_name,use_hf_embeddings=use_hf_embeddings)
 
     def _process(self, text: str, meta_extra: dict):
         """Clean → Validate → Chunk → Store"""

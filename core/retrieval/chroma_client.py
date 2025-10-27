@@ -1,6 +1,4 @@
 """
-chroma_client.py
-
 Purpose:
 --------
 Thin wrapper around a persistent ChromaDB collection used by the Medical RAG Assistant.
@@ -13,7 +11,7 @@ It centralizes:
 Why this matters:
 -----------------
 Keeping vector-store access in one place makes it easier to:
-  - Swap embedding models later (e.g., BAAI/bge-m3) without touching the rest of the code
+  - Swap embedding models later (e.g., BAAI/bge-m3,neuml/pubmedbert-base-embeddings ) without touching the rest of the code
   - Enforce consistent metadata (e.g., source/source_mode) across the app
   - Support the two clear modes designed:
        1) "user_pdf" — private uploads
@@ -23,6 +21,11 @@ Keeping vector-store access in one place makes it easier to:
 from typing import Any, Dict, Iterable, List, Optional
 import chromadb
 from chromadb.utils import embedding_functions
+from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 class ChromaDBClient:
@@ -30,8 +33,8 @@ class ChromaDBClient:
         self,
         collection_name: str = "medical_chunks",
         persist_path: str = "./chroma_db",
-        use_hf_embeddings: bool = False,
-        hf_model_name: str = "BAAI/bge-m3",
+        use_hf_embeddings: bool = True,
+        hf_model_name: str = "neuml/pubmedbert-base-embeddings",
     ) -> None:
         """
         Args:
@@ -46,7 +49,7 @@ class ChromaDBClient:
 
         # Choose embedding function
         if use_hf_embeddings:
-            self.embedding_fn = embedding_functions.HuggingFaceEmbeddingFunction(
+            self.embedding_fn = SentenceTransformerEmbeddingFunction(
                 model_name=hf_model_name
             )
         else:

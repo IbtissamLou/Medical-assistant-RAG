@@ -13,7 +13,7 @@ import streamlit as st
 import os
 from core.retrieval.ingest_pipeline import IngestPipeline
 
-pipeline = IngestPipeline(collection_name="RAG_Assistant")
+pipeline = IngestPipeline(collection_name="RAG_Assistant_pubmedbert",use_hf_embeddings=True)
 
 st.title("🩺 Medical RAG Assistant")
 st.write("Choose a mode to get started 👇")

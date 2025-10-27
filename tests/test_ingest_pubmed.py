@@ -38,7 +38,7 @@ def test_pubmed_topic_ingestion(mock_fetch_article, mock_search_pmids):
         }
     }
 
-    pipeline = IngestPipeline(collection_name="test_pubmed_chunks")
+    pipeline = IngestPipeline(collection_name="test_pubmed_chunks",use_hf_embeddings=False)
 
     pipeline.ingest_pubmed_by_query("immune response", retmax=2)
 
