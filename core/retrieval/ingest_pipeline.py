@@ -17,6 +17,7 @@ from .document_loader import DocumentLoader
 from .text_preprocessor import TextPreprocessor
 from .chunker import Chunker
 from .chroma_client import ChromaDBClient
+from core.rag.query_rewriter import QueryRewriter
 
 
 class IngestPipeline:
@@ -67,7 +68,10 @@ class IngestPipeline:
     def ingest_pubmed_by_query(self, query: str, retmax: int = 5):
         print(f"🔍 Searching PubMed for: '{query}'")
 
-        pmids = self.loader.search_pubmed_pmids(query, retmax)
+        rewrite = QueryRewriter().expand(query)
+        print(f"   ➜ Expanded: '{rewrite}'")
+
+        pmids = self.loader.search_pubmed_pmids(rewrite, retmax)
 
         for pmid in pmids:
             # ✅ Duplication check before ingestion

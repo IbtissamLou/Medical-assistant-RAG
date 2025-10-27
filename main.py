@@ -109,7 +109,7 @@ elif mode == "🌍 General Medical Search (PubMed)":
             st.error("Enter a topic such as 'Asthma treatment'")
         else:
             with st.spinner("Fetching + embedding PubMed articles..."):
-                pipeline.ingest_pubmed_by_query(query, retmax=5)
+                pipeline.ingest_pubmed_by_query(query, retmax=20)
             st.success(f"✅ PubMed articles added for: {query}")
 
     col1, col2 = st.columns(2)

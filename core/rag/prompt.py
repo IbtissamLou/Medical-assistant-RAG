@@ -8,11 +8,11 @@ from typing import List, Dict
 
 
 SYSTEM_INSTRUCTIONS = """You are a medical assistant. Answer using only the supplied CONTEXT.
-- If the answer is not in CONTEXT, say you don't have enough evidence.
+- If insufficient CONTEXT: say “Not enough evidence in provided sources.”
 - Be concise, factual, and avoid speculation.
 - Use clear headings and bullet points when helpful.
-- Cite sources inline as [1], [2], ... referring to the provided CONTEXT SOURCE LIST."""
-
+- Every medical statement MUST include inline citation like [1], [2].
+- Never include information not present in CONTEXT — no hallucination."""
 
 def format_context(chunks: List[Dict]) -> str:
     """Create a numbered context block for the LLM."""
