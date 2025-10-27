@@ -1,111 +1,156 @@
-"""
-Streamlit UI for the Medical RAG Assistant
-------------------------------------------
-Two separate knowledge search modes:
-
-Mode A: User PDF Upload → Private Retrieval Only
-Mode B: PubMed Topic Search → Open-Access Medical Knowledge
-
-This ensures clean separation between private and public data sources.
-"""
-
 import streamlit as st
 import os
+from dotenv import load_dotenv
+
 from core.retrieval.ingest_pipeline import IngestPipeline
+from core.rag.retriever import Retriever
+from core.rag.answerer import RAGAnswerer
+from core.rag.llm_provider import LLMProvider  # ✅ using Ollama / LangChain provider
 
-pipeline = IngestPipeline(collection_name="RAG_Assistant_pubmedbert",use_hf_embeddings=True)
+load_dotenv()
 
+pipeline = IngestPipeline(
+    collection_name="RAG_Assistant_pubmedbert",  # ✅ separate DB for real embeddings
+    use_hf_embeddings=True                       # ✅ medical embedding model
+)
+
+retriever = Retriever(pipeline.vector_store)
+rag = RAGAnswerer(retriever=retriever, llm=LLMProvider(model="llama3"))
+
+st.set_page_config(page_title="Medical RAG Assistant", page_icon="🩺")
 st.title("🩺 Medical RAG Assistant")
-st.write("Choose a mode to get started 👇")
+st.write("Search evidence-based medical knowledge using your documents or PubMed.")
 
-# --------------------------------------
-# ✅ MODE SELECTOR
-# --------------------------------------
+# ---------------------------------------
+# ✅ Select Mode
+# ---------------------------------------
 mode = st.sidebar.radio(
-    "Select Search Mode",
+    "Choose search mode",
     ["📄 My Medical Document", "🌍 General Medical Search (PubMed)"]
 )
 
 query = st.text_area(
     "Ask a medical question",
-    placeholder="e.g., What are the symptoms of diabetes?"
+    placeholder="e.g., What are symptoms of diabetes?"
 )
 n_results = st.sidebar.slider("Number of results", 1, 10, 3)
 
 st.markdown("---")
 
-# --------------------------------------
-# ✅ MODE A — USER PDF KNOWLEDGE
-# --------------------------------------
+# ----------------------------------------------------------------------
+# ✅ MODE A — User PDF ingestion & private RAG search
+# ----------------------------------------------------------------------
 if mode == "📄 My Medical Document":
-    st.subheader("📄 Upload a medical PDF to enable private search")
+    st.subheader("📄 Upload your medical PDF document")
 
-    uploaded = st.file_uploader("Upload your document", type=["pdf"])
+    uploaded = st.file_uploader("Upload PDF", type=["pdf"])
 
     if uploaded:
         upload_dir = "data/uploads"
         os.makedirs(upload_dir, exist_ok=True)
+        pdf_path = os.path.join(upload_dir, uploaded.name)
 
-        file_path = os.path.join(upload_dir, uploaded.name)
-
-        with open(file_path, "wb") as f:
+        with open(pdf_path, "wb") as f:
             f.write(uploaded.read())
 
-        with st.spinner("Processing + embedding your document..."):
-            pipeline.ingest_pdf_file(file_path)
+        with st.spinner("✅ Processing + embedding PDF..."):
+            pipeline.ingest_pdf_file(pdf_path)
 
-        st.success("✅ Document added to your knowledge base!")
+        st.success("Uploaded and stored successfully ✅")
 
-    if st.button("🔍 Search My Document"):
-        if not query:
-            st.error("Please write a question")
-        else:
-            with st.spinner("Searching your uploaded document..."):
-                results = pipeline.vector_store.query(
-                    query=query,
-                    n_results=n_results,
-                    where={"source_mode": "user_pdf"}
-                )
+    col1, col2 = st.columns(2)
 
-            st.write("### Results:")
-            if not results["documents"][0]:
-                st.warning("No relevant info in your document.")
+    # 🔹 Semantic Search only
+    with col1:
+        if st.button("🔎 Search My Document"):
+            if not query:
+                st.error("Please enter a question")
             else:
-                for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
-                    st.markdown("----")
-                    st.write(doc)
-                    st.caption(f"📌 File: {meta.get('file_name')} | ⏱️ {meta.get('ingested_at')}")
+                with st.spinner("Searching document..."):
+                    res = pipeline.vector_store.query(
+                        query=query,
+                        n_results=n_results,
+                        where={"source_mode": "user_pdf"}
+                    )
+                docs = res.get("documents", [[]])[0]
+                metas = res.get("metadatas", [[]])[0]
 
-# --------------------------------------
-# ✅ MODE B — PubMed PUBLIC KNOWLEDGE
-# --------------------------------------
+                st.write("### 🧩 Retrieved Chunks")
+                if not docs:
+                    st.warning("No relevant information found.")
+                else:
+                    for d, m in zip(docs, metas):
+                        st.markdown("---")
+                        st.write(d)
+                        st.caption(f"📁 {m.get('file_name')} | ⏱ {m.get('ingested_at')}")
+
+    # 🔹 RAG Answer Generation
+    with col2:
+        if st.button("🧠 Answer with LLM (RAG) — My Document"):
+            if not query:
+                st.error("Please enter a question")
+            else:
+                with st.spinner("Generating medical answer..."):
+                    out = rag.answer(query, n_results=n_results, source_mode="user_pdf")
+                st.markdown("## ✅ Medical Answer")
+                st.write(out["answer"])
+                st.markdown("## 📚 Sources")
+                for i, src in enumerate(out["sources"], start=1):
+                    st.write(f"[{i}] {src}")
+
+# ----------------------------------------------------------------------
+# ✅ MODE B — PubMed ingestion, search & RAG answer
+# ----------------------------------------------------------------------
 elif mode == "🌍 General Medical Search (PubMed)":
-    st.subheader("Search PubMed Open-Access Articles")
+    st.subheader("🌍 Search PubMed open-access medical research")
 
-    if st.button("🔎 Search PubMed & Add Articles"):
+    if st.button("🔎 Fetch PubMed Articles"):
         if not query:
-            st.error("Enter a topic like 'Hypertension treatment'")
+            st.error("Enter a topic such as 'Asthma treatment'")
         else:
-            with st.spinner("Fetching relevant PubMed articles..."):
+            with st.spinner("Fetching + embedding PubMed articles..."):
                 pipeline.ingest_pubmed_by_query(query, retmax=5)
-            st.success(f"✅ Added PubMed knowledge for: {query}")
+            st.success(f"✅ PubMed articles added for: {query}")
 
-    if st.button("📚 Search Knowledge Base"):
-        with st.spinner("Searching PubMed knowledge..."):
-            results = pipeline.vector_store.query(
-                query=query,
-                n_results=n_results,
-                where={"source_mode": "pubmed"}
-            )
+    col1, col2 = st.columns(2)
 
-        st.write(f"### Retrieved PubMed Information:")
-        if not results["documents"][0]:
-            st.warning("Try getting PubMed data first ⬆️")
-        else:
-            for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
-                st.markdown("----")
-                st.write(doc)
-                st.caption(
-                    f"📚 {meta.get('journal', 'Unknown Journal')} "
-                    f"({meta.get('year', 'N/A')}) — PMID: {meta.get('pmid')}"
-                )
+    # 🔹 Search existing PubMed DB
+    with col1:
+        if st.button("📚 Search Retrieved PubMed Knowledge"):
+            if not query:
+                st.error("Please enter a question")
+            else:
+                with st.spinner("Searching PubMed knowledge..."):
+                    res = pipeline.vector_store.query(
+                        query=query,
+                        n_results=n_results,
+                        where={"source_mode": "pubmed"}
+                    )
+                docs = res.get("documents", [[]])[0]
+                metas = res.get("metadatas", [[]])[0]
+
+                st.write("### 🔬 Retrieved PubMed Chunks")
+                if not docs:
+                    st.warning("No data yet — fetch PubMed first ↑")
+                else:
+                    for d, m in zip(docs, metas):
+                        st.markdown("---")
+                        st.write(d)
+                        st.caption(
+                            f"📚 {m.get('journal', 'Journal')} ({m.get('year', 'N/A')}) — PMID: {m.get('pmid')}"
+                        )
+
+    # 🔹 RAG Answer
+    with col2:
+        if st.button("🧠 Answer with LLM (RAG) — PubMed"):
+            if not query:
+                st.error("Please enter a question")
+            else:
+                with st.spinner("Synthesizing answer from PubMed..."):
+                    out = rag.answer(query, n_results=n_results, source_mode="pubmed")
+
+                st.markdown("## ✅ Medical Answer")
+                st.write(out["answer"])
+                st.markdown("## 📚 Sources")
+                for i, src in enumerate(out["sources"], start=1):
+                    st.write(f"[{i}] {src}")
