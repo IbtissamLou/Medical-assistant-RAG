@@ -253,3 +253,7 @@ Planned high-impact extensions include:
 By combining **robust retrieval**, **transparent sourcing**, and a **safety-first design**, this project aims to become a **trusted, explainable AI partner** for healthcare professionals and medical learners.
 
 Continuous improvement will be driven by measurable outcomes, ensuring that the assistant remains accurate, auditable, and clinically responsible.
+
+## 🧑‍💻 Authors
+
+Ibtissam Lou — Data Scientist & ML Engineer - Contact : ibtissamloukili20@gmail.com
