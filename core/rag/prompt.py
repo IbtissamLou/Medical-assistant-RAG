@@ -7,12 +7,7 @@ as [1], [2], ... which we later map to the metadata (PMID, journal, file name).
 from typing import List, Dict
 
 
-SYSTEM_INSTRUCTIONS = """You are a medical assistant. Answer using only the supplied CONTEXT.
-- If insufficient CONTEXT: say “Not enough evidence in provided sources.”
-- Be concise, factual, and avoid speculation.
-- Use clear headings and bullet points when helpful.
-- Every medical statement MUST include inline citation like [1], [2].
-- Never include information not present in CONTEXT — no hallucination."""
+SYSTEM_INSTRUCTIONS = """You are a medical assistant. Answer ONLY using the provided CONTEXT. Cite sources as [1], [2]."""
 
 def format_context(chunks: List[Dict]) -> str:
     """Create a numbered context block for the LLM."""

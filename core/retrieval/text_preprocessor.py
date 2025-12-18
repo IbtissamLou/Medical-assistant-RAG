@@ -22,7 +22,7 @@ class TextPreprocessor:
         - Must be a meaningful medical text
         - Must be sufficiently long
         """
-        if not text or len(text) < 200:
+        if not text or len(text) < 10:
             raise ValueError("❌ Text too short — not medically useful.")
 
         return True

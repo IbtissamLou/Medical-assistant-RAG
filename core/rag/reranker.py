@@ -12,7 +12,7 @@ from langchain.llms import Ollama
 
 
 class ReRanker:
-    def __init__(self, model: str = "llama3"):
+    def __init__(self, model: str = "phi3:latest"):
         self.llm = Ollama(model=model, temperature=0)
 
     def batch_score(self, question: str, chunks: List[Dict]) -> List[float]:

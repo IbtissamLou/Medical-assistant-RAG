@@ -11,12 +11,7 @@ class Retriever:
     def __init__(self, vector_store: ChromaDBClient):
         self.vs = vector_store
 
-    def fetch(
-        self,
-        query: str,
-        n_results: int = 5,
-        source_mode: Optional[str] = None,  # "user_pdf" or "pubmed"
-    ) -> List[Dict]:
+    def fetch(self, query: str, n_results: int = 5, source_mode: Optional[str] = None, ) -> List[Dict]:
         where = {"source_mode": source_mode} if source_mode else None
         results = self.vs.query(query=query, n_results=n_results, where=where)
 
