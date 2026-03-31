@@ -54,8 +54,6 @@ This design ensures **clinical responsibility and explainability**.
 
 This significantly improves retrieval precision, especially for short PubMed abstracts.
 
----
-
 ### 3. Embeddings & Vector Store
 
 - **Embedding model**: **PubMedBERT**  
@@ -66,11 +64,11 @@ This significantly improves retrieval precision, especially for short PubMed abs
   - Stores embeddings and rich metadata  
   - Enables semantic search with full provenance tracking  
 
-Automated unit tests validate:
-- Ingestion correctness  
-- Chunk integrity  
-- Embedding generation  
-- Metadata attachment  
+- **Automated unit tests validate**
+  - Ingestion correctness  
+  - Chunk integrity  
+  - Embedding generation  
+  - Metadata attachment  
 
 This is essential for reproducibility and compliance.
 
@@ -78,7 +76,7 @@ This is essential for reproducibility and compliance.
 
 ## ⚙️ Installation & Execution
 
-### 🧩 Prerequisites
+### Prerequisites
 
 Make sure the following are installed on your system:
 
@@ -88,42 +86,42 @@ Make sure the following are installed on your system:
 - **Virtual environment tool** (`venv` recommended)
 - **Ollama** (for local LLM inference)
 
-### 📥 Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/IbtissamLou/Medical-assistant-RAG.git
 cd medical-rag-assistant
 ```
 
-### 🤖 Install & Run Local LLM (Ollama)
+### Install & Run Local LLM (Ollama)
 
 - Start Ollama in a separate terminal: ollama serve
 - Pull the recommended lightweight medical-safe model: ollama pull phi3
 - You can verify installed models with: ollama list
 
-### ▶️ Run the Application
+### Run the Application
 
 ```bash
 streamlit run main.py
 ```
 ---
 
-## Supported Knowledge Sources
+## 🤖 Supported Knowledge Sources
 
-### 📄 Private Medical Documents (PDF)
+### Private Medical Documents (PDF)
 - Secure ingestion of user-uploaded medical PDFs  
 - Suitable for proprietary research, guidelines, or internal clinical notes  
 - No data is sent externally  
 - High recall is prioritized to avoid losing critical context  
 
-### 🌍 PubMed Open-Access Literature
+### PubMed Open-Access Literature
 - Ingestion of open-access PubMed articles  
 - Validated licensing and provenance  
 - Rich metadata: PMID, journal, year, ingestion time  
 - Optimized for evidence-based medicine use cases
 ---
 
-## 🤖 Medical Question Answering Pipeline
+## 🚀 Medical Question Answering Pipeline
 
 ### Retrieval
 - Relevant passages are retrieved from:
@@ -204,7 +202,7 @@ These metrics will continuously validate clinical reliability and system safety.
 
 ---
 
-## 🧪 🔁 Continuous Testing & Integration
+## 🔁 Continuous Testing & Integration
 
 Unit tests for:
 - Document ingestion
@@ -222,7 +220,7 @@ CI-ready structure:
 
 ---
   
-## 🚚 🚀 Continuous Delivery
+## 🚚 Continuous Delivery
 - Reproducible environment via requirements.txt
 - Modular architecture enabling incremental feature delivery
 - Version-controlled datasets, embeddings, and pipelines
@@ -246,14 +244,14 @@ Deployment considerations:
 
 Planned high-impact extensions include:
 
-### 🧩 Multi-Agent Medical Assistant
+### Multi-Agent Medical Assistant
 - Specialized agents for:
   - Literature retrieval  
   - Safety validation  
   - Clinical summarization  
   - Evidence cross-checking  
 
-### 🩻 Medical Image Understanding
+### Medical Image Understanding
 - Analysis of:
   - X-rays  
   - CT scans  
@@ -262,14 +260,14 @@ Planned high-impact extensions include:
 
 - Combined with literature retrieval for explainable findings.
 
-### 📚 Expanded Medical Data Sources
+### Expanded Medical Data Sources
 - WHO  
 - CDC  
 - ClinicalTrials.gov  
 - Clinical guideline repositories  
 - ICD-10 and SNOMED integration  
 
-### ⚡ Performance & Scalability
+### Performance & Scalability
 - Model quantization  
 - Smart caching  
 - Hybrid local/cloud inference  
