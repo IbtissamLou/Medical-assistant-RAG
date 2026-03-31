@@ -90,8 +90,10 @@ Make sure the following are installed on your system:
 
 ### 📥 Clone the Repository
 
+```bash
 git clone https://github.com/IbtissamLou/Medical-assistant-RAG.git
 cd medical-rag-assistant
+```
 
 ### 🤖 Install & Run Local LLM (Ollama)
 
@@ -101,7 +103,9 @@ cd medical-rag-assistant
 
 ### ▶️ Run the Application
 
+```bash
 streamlit run main.py
+```
 ---
 
 ## Supported Knowledge Sources
@@ -218,7 +222,7 @@ CI-ready structure:
 
 ---
   
-🚚 🚀 Continuous Delivery
+## 🚚 🚀 Continuous Delivery
 - Reproducible environment via requirements.txt
 - Modular architecture enabling incremental feature delivery
 - Version-controlled datasets, embeddings, and pipelines
@@ -226,7 +230,7 @@ CI-ready structure:
 
 ---
   
-🚀 Continuous Deployment (CDP)
+## 🚀 Continuous Deployment (CDP)
 - Current: Local deployment (privacy-first)
 Future deployment targets:
 - Containerized deployment (Docker + GCP/AWS)
