@@ -143,8 +143,6 @@ streamlit run main.py
 - Citations are displayed clearly to the user  
 - If evidence is insufficient, the system responds explicitly instead of guessing  
 
----
-
 ### Language Model
 
 - **Local LLM**: **Phi-3**  
