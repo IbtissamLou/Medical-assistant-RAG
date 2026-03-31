@@ -281,4 +281,4 @@ Continuous improvement will be driven by measurable outcomes, ensuring that the 
 
 ## 🧑‍💻 Authors
 
-Ibtissam Lou — ML Engineer & Data Scientist - Contact : ibtissamloukili20@gmail.com
+Ibtissam LOUKILI — ML Engineer & Data Scientist - Contact : ibtissamloukili20@gmail.com
