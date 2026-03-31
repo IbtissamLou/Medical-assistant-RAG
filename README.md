@@ -5,7 +5,7 @@
 
 ## 📌 Project Description
 
-This project is a **medical knowledge assistant** designed for **healthcare professionals** who require **fast, reliable, and fully traceable clinical information** at the point of care.
+This project is a **medical knowledge assistant** designed for **healthcare professionals / medical students** who require **fast, reliable, and fully traceable clinical information** at the point of care.
 
 Clinicians often lose valuable time searching for trustworthy evidence across fragmented sources, which can delay decision-making and introduce variability in care. This system addresses that challenge by delivering **concise, evidence-backed medical answers**, grounded strictly in validated medical literature and private clinical documents.
 
@@ -45,25 +45,7 @@ The assistant relies on RAG to tightly couple information retrieval with answer 
 
 This design ensures **clinical responsibility and explainability**.
 
----
-
-### 2. Supported Knowledge Sources
-
-#### 📄 Private Medical Documents (PDF)
-- Secure ingestion of user-uploaded medical PDFs  
-- Suitable for proprietary research, guidelines, or internal clinical notes  
-- No data is sent externally  
-- High recall is prioritized to avoid losing critical context  
-
-#### 🌍 PubMed Open-Access Literature
-- Ingestion of open-access PubMed articles  
-- Validated licensing and provenance  
-- Rich metadata: PMID, journal, year, ingestion time  
-- Optimized for evidence-based medicine use cases  
-
----
-
-### 3. Preprocessing & Chunking
+### 2. Preprocessing & Chunking
 
 - Documents are cleaned and validated for medical relevance  
 - Chunking is performed using `RecursiveCharacterTextSplitter`  
@@ -74,7 +56,7 @@ This significantly improves retrieval precision, especially for short PubMed abs
 
 ---
 
-### 4. Embeddings & Vector Store
+### 3. Embeddings & Vector Store
 
 - **Embedding model**: **PubMedBERT**  
   - Domain-specific biomedical language representation  
@@ -94,6 +76,49 @@ This is essential for reproducibility and compliance.
 
 ---
 
+## ⚙️ Installation & Execution
+
+### 🧩 Prerequisites
+
+Make sure the following are installed on your system:
+
+- **Python 3.10+**
+- **pip** (Python package manager)
+- **Git**
+- **Virtual environment tool** (`venv` recommended)
+- **Ollama** (for local LLM inference)
+
+### 📥 Clone the Repository
+
+git clone https://github.com/IbtissamLou/Medical-assistant-RAG.git
+cd medical-rag-assistant
+
+### 🤖 Install & Run Local LLM (Ollama)
+
+- Start Ollama in a separate terminal: ollama serve
+- Pull the recommended lightweight medical-safe model: ollama pull phi3
+- You can verify installed models with: ollama list
+
+### ▶️ Run the Application
+
+streamlit run main.py
+---
+
+## Supported Knowledge Sources
+
+### 📄 Private Medical Documents (PDF)
+- Secure ingestion of user-uploaded medical PDFs  
+- Suitable for proprietary research, guidelines, or internal clinical notes  
+- No data is sent externally  
+- High recall is prioritized to avoid losing critical context  
+
+### 🌍 PubMed Open-Access Literature
+- Ingestion of open-access PubMed articles  
+- Validated licensing and provenance  
+- Rich metadata: PMID, journal, year, ingestion time  
+- Optimized for evidence-based medicine use cases
+---
+
 ## 🤖 Medical Question Answering Pipeline
 
 ### Retrieval
@@ -108,8 +133,6 @@ This is essential for reproducibility and compliance.
   - LLM-based re-ranking for precision  
 
 - Re-ranking is **applied only to PubMed**, not to private PDFs, to preserve recall.
-
----
 
 ### Prompt Grounding & Safety
 
@@ -138,7 +161,9 @@ This is essential for reproducibility and compliance.
 - No raw semantic search exposed to the user  
 - Clean clinical response formatting  
 - Clearly visible citations  
-- Safety disclaimer reminding users to rely on professional medical judgment  
+- Safety disclaimer reminding users to rely on professional medical judgment
+
+![Medical RAG Demo](docs/medical_assit_s.gif) 
 
 ---
 
@@ -175,43 +200,43 @@ These metrics will continuously validate clinical reliability and system safety.
 
 ---
 
-## ⚙️ Installation & Execution
+## 🧪 🔁 Continuous Testing & Integration
 
-This project is designed to run **locally**, ensuring privacy, low latency, and full control over medical data.
+Unit tests for:
+- Document ingestion
+- Chunking integrity
+- Embedding generation
+- Metadata consistency
 
----
-
-### 🧩 Prerequisites
-
-Make sure the following are installed on your system:
-
-- **Python 3.10+**
-- **pip** (Python package manager)
-- **Git**
-- **Virtual environment tool** (`venv` recommended)
-- **Ollama** (for local LLM inference)
-
----
-
-### 📥 Clone the Repository
-
-git clone https://github.com/IbtissamLou/Medical-assistant-RAG.git
-cd medical-rag-assistant
+Integration tests for:
+- End-to-end RAG pipeline
+- Retrieval + generation consistency
+  
+CI-ready structure:
+- Automated test execution (e.g., GitHub Actions)
+- Validation of reproducibility and data integrity
 
 ---
-
-### 🤖 Install & Run Local LLM (Ollama)
-
-- Start Ollama in a separate terminal: ollama serve
-- Pull the recommended lightweight medical-safe model: ollama pull phi3
-- You can verify installed models with: ollama list
+  
+🚚 🚀 Continuous Delivery
+- Reproducible environment via requirements.txt
+- Modular architecture enabling incremental feature delivery
+- Version-controlled datasets, embeddings, and pipelines
+- Ready for packaging into containerized environments (Docker-ready design)
 
 ---
+  
+🚀 Continuous Deployment (CDP)
+- Current: Local deployment (privacy-first)
+Future deployment targets:
+- Containerized deployment (Docker + GCP/AWS)
+- Secure on-premise hospital environments
+Deployment considerations:
+- Local LLM hosting (Ollama)
+- Secure vector database management
+- Scalable inference endpoints
 
-### ▶️ Run the Application
-
-streamlit run main.py
-
+---
 
 ## 🔥 Future Improvements
 
@@ -256,4 +281,4 @@ Continuous improvement will be driven by measurable outcomes, ensuring that the 
 
 ## 🧑‍💻 Authors
 
-Ibtissam Lou — Data Scientist & ML Engineer - Contact : ibtissamloukili20@gmail.com
+Ibtissam Lou — ML Engineer & Data Scientist - Contact : ibtissamloukili20@gmail.com
